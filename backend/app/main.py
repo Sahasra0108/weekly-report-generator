@@ -19,7 +19,6 @@ app.add_middleware(
 
 app.include_router(api_router)
 
-
 @app.get("/api/v1/health")
 def health(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
