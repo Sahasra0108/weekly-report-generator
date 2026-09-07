@@ -324,7 +324,7 @@ export function ReportForm({
                   onChange={() => f.setKeyBlocker(i)}
                   className="h-3.5 w-3.5"
                 />
-                Key
+                Key issue
               </label>
               <Textarea
                 rows={2}
@@ -379,7 +379,7 @@ export function ReportForm({
                   onChange={() => f.setKeyAchievement(i)}
                   className="h-3.5 w-3.5"
                 />
-                Key
+                Key achivement
               </label>
               <Textarea
                 rows={2}
