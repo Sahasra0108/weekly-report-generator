@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     COOKIE_NAME: str = "access_token"
     COOKIE_SECURE: bool = False   # True in production (HTTPS only)
     COOKIE_SAMESITE: str = "lax"
+    GEMINI_API_KEY: str | None = None
+    GEMINI_MODEL: str = "gemini-flash-latest"
 
 
 settings = Settings()
