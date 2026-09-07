@@ -28,14 +28,14 @@ import type {
 
 /** Shared palette so charts stay visually consistent. */
 const PALETTE = [
-  "#2563eb",
-  "#16a34a",
-  "#9333ea",
-  "#ea580c",
+  "#6d28d9",
   "#0891b2",
-  "#dc2626",
+  "#0f9d58",
+  "#ea580c",
+  "#9333ea",
+  "#2563eb",
   "#ca8a04",
-  "#4f46e5",
+  "#dc2626",
 ];
 
 const axisProps = {

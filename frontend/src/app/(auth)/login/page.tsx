@@ -31,9 +31,9 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await mutate({ email, password });
-      // The redirect is handled by the effect above once `user` is set.
+    
     } catch {
-      // Error state is already captured by useMutation.
+       
     }
   }
 

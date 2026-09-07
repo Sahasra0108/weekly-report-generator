@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Button, ErrorMessage, Field, Input, Spinner } from "@/components/ui";
+import { Button, ErrorMessage, Field, Input, Spinner, PasswordStrength } from "@/components/ui";
 import { useAuth } from "@/lib/auth-context";
 import { useMutation } from "@/hooks/useApi";
+import { passwordIsValid } from "@/lib/password";
 
 interface FormState {
   full_name: string;
@@ -53,12 +54,12 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (form.password !== form.confirm) {
-      setLocalError("The two passwords do not match");
+    if (!passwordIsValid(form.password, form.email)) {
+      setLocalError("Your password does not meet all the requirements below");
       return;
     }
-    if (form.password.length < 8) {
-      setLocalError("Password must be at least 8 characters");
+    if (form.password !== form.confirm) {
+      setLocalError("The two passwords do not match");
       return;
     }
 
@@ -110,12 +111,7 @@ export default function RegisterPage() {
           />
         </Field>
 
-        <Field
-          label="Password"
-          required
-          hint="At least 8 characters"
-          error={fieldErrors.password}
-        >
+        <Field label="Password" required error={fieldErrors.password}>
           <Input
             type="password"
             value={form.password}
@@ -124,6 +120,7 @@ export default function RegisterPage() {
             invalid={Boolean(fieldErrors.password)}
             required
           />
+          <PasswordStrength password={form.password} email={form.email} />
         </Field>
 
         <Field label="Confirm password" required>

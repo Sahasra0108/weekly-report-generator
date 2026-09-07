@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* ---- Brand ---- */
+  --color-primary: #6d28d9;
+  --color-primary-hover: #5b21b6;
+  --color-primary-soft: #f3f0ff;
+  --color-primary-border: #ddd6fe;
+  --color-primary-text: #5b21b6;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* ---- Surfaces ---- */
+  --color-canvas: #fafaff;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f5fb;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* ---- Text ---- */
+  --color-ink: #1e1b2e;
+  --color-ink-soft: #4b4667;
+  --color-muted: #7c7898;
+  --color-faint: #a5a2bd;
+
+  /* ---- Lines ---- */
+  --color-line: #e9e6f2;
+  --color-line-strong: #d8d4e8;
+
+  /* ---- Status ---- */
+  --color-success: #0f9d58;
+  --color-success-soft: #e9f7ef;
+  --color-warning: #b45309;
+  --color-warning-soft: #fdf4e3;
+  --color-danger: #dc2626;
+  --color-danger-soft: #fdecec;
+  --color-info: #2563eb;
+  --color-info-soft: #eaf1fe;
+
+  /* ---- Shape ---- */
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* Soft violet blooms behind the interface. The sidebar's backdrop-blur needs
+   something to blur - over a flat colour it has no visible effect. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at -10% -5%, rgb(139 92 246 / 0.28), transparent 60%),
+    radial-gradient(45rem 35rem at 0% 55%, rgb(109 40 217 / 0.20), transparent 65%),
+    radial-gradient(40rem 30rem at 15% 110%, rgb(168 85 247 / 0.22), transparent 60%);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

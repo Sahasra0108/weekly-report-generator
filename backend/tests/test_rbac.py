@@ -313,3 +313,31 @@ class TestPrivilegeEscalation:
             f"/api/v1/reports?user_id={users['other_member'].id}"
         ).json()["items"]
         assert all(item["author"]["email"] == "member@test.com" for item in items)
+    
+    def test_weak_passwords_are_rejected(self, client, users):
+        for password, reason in [
+            ("Short1!", "too short"),
+            ("password!", "no number"),
+            ("password1", "no special character"),
+            ("12345678!", "no letter"),
+        ]:
+            res = client.post(
+                "/api/v1/auth/register",
+                json={
+                    "email": f"new-{reason.replace(' ', '')}@test.com",
+                    "full_name": "Test Person",
+                    "password": password,
+                },
+            )
+            assert res.status_code == 422, f"{reason} should have been rejected"
+
+    def test_password_cannot_equal_email(self, client, users):
+        res = client.post(
+            "/api/v1/auth/register",
+            json={
+                "email": "Passw0rd!@test.com",
+                "full_name": "Test Person",
+                "password": "Passw0rd!@test.com",
+            },
+        )
+        assert res.status_code == 422

@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
+
+from app.core.password import MAX_LENGTH, MIN_LENGTH, validate_password
 
 
 class RoleRead(BaseModel):
@@ -18,8 +20,12 @@ class UserBase(BaseModel):
 
 
 class UserRegister(UserBase):
-    # bcrypt silently truncates past 72 bytes, so cap it here and fail loudly
-    password: str = Field(min_length=8, max_length=72)
+    password: str = Field(min_length=MIN_LENGTH, max_length=MAX_LENGTH)
+
+    @model_validator(mode="after")
+    def check_password_strength(self):
+        validate_password(self.password, email=self.email)
+        return self
 
 
 class UserCreate(UserRegister):
@@ -36,7 +42,14 @@ class UserUpdate(BaseModel):
 
 class PasswordChange(BaseModel):
     current_password: str
-    new_password: str = Field(min_length=8, max_length=72)
+    new_password: str = Field(min_length=MIN_LENGTH, max_length=MAX_LENGTH)
+
+    @model_validator(mode="after")
+    def check_new_password(self):
+        validate_password(self.new_password)
+        if self.new_password == self.current_password:
+            raise ValueError("The new password must be different from the current one")
+        return self
 
 
 class UserRead(UserBase):
