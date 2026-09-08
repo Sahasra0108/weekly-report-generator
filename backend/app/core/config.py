@@ -1,5 +1,13 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+@field_validator("DATABASE_URL")
+@classmethod
+def name_the_driver(cls, v: str) -> str:
+    if v.startswith("mysql://"):
+        v = v.replace("mysql://", "mysql+pymysql://", 1)
+    if "ssl-mode=REQUIRED" in v:
+        v = v.replace("ssl-mode=REQUIRED", "ssl_verify_cert=false")
+    return v
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
