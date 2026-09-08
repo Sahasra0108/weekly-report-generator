@@ -1,16 +1,20 @@
-# Weekly Report Generator & Team Dashboard
+# Weekly Report Generator 
 
 A full-stack tool for structured weekly reporting with a manager review cycle.
 Team members file a weekly report against a fixed field structure; managers
 review, approve, or send it back with a comment. Every submission is versioned,
 so past versions stay readable in full.
 
-**Live Demo:** [Open Application](https://weekly-report-generator-bh6x.vercel.app)
+- **Live Demo:** [Open Application](https://weekly-report-generator-bh6x.vercel.app)
+- **API:** [API Endpoint](https://weekly-report-generator-azure.vercel.app/api/v1)
+- **API Docs:** [Swagger Documentation](https://weekly-report-generator-azure.vercel.app/docs)
+  
+<img width="1912" height="862" alt="image" src="https://github.com/user-attachments/assets/abdc59b4-3b19-4a5a-adba-c9a756d2f8c6" />
+<img width="1901" height="862" alt="image" src="https://github.com/user-attachments/assets/27a06305-08b0-453c-8380-8327c4ffb7ee" />
+<img width="1897" height="856" alt="image" src="https://github.com/user-attachments/assets/45ff4bd8-c12f-412a-b305-73e136394b72" />
 
-**API:** [API Endpoint](https://weekly-report-generator-azure.vercel.app/api/v1)
 
-**API Docs:** [Swagger Documentation](https://weekly-report-generator-azure.vercel.app/docs)
----
+
 
 ## Stack
 
