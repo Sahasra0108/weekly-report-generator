@@ -8,6 +8,15 @@ so past versions stay readable in full.
 - **Live Demo:** [Open Application](https://weekly-report-generator-bh6x.vercel.app)
 - **API:** [API Endpoint](https://weekly-report-generator-azure.vercel.app/api/v1)
 - **API Docs:** [Swagger Documentation](https://weekly-report-generator-azure.vercel.app/docs)
+
+#### Demo Credentials - Check Out the Live Demo
+
+All demo accounts use the password `Password123!`
+
+- **Admin:** `admin@example.com`
+- **Manager:** `manager@example.com`
+- **Member:** `nimal@example.com`
+
   
 <img width="1912" height="862" alt="image" src="https://github.com/user-attachments/assets/abdc59b4-3b19-4a5a-adba-c9a756d2f8c6" />
 <img width="1901" height="862" alt="image" src="https://github.com/user-attachments/assets/27a06305-08b0-453c-8380-8327c4ffb7ee" />
