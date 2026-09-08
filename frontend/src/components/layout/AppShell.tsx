@@ -114,14 +114,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
             <div className="flex">
                 <aside
-                    style={{
-                        backgroundColor: "rgba(255, 255, 255, 0.45)",
-                        backdropFilter: "blur(24px)",
-                        WebkitBackdropFilter: "blur(24px)",
-                        borderRight: "1px solid rgba(255, 255, 255, 0.7)",
-                    }}
                     className={`${mobileOpen ? "flex" : "hidden"
-                        } w-full shrink-0 flex-col px-3 py-5 lg:flex lg:w-60 lg:min-h-[calc(100vh-3.5rem)]`}
+                        } w-full shrink-0 flex-col border-b border-white/50 bg-gradient-to-b from-[#ddd6fe] via-[#e9e5fd] to-[#faf9ff] px-3 py-5 lg:flex lg:w-60 lg:border-b-0 lg:border-r lg:min-h-[calc(100vh-3.5rem)]`}
                 >
                     <nav className="flex-1 space-y-6">
                         {sections.map((section) => (

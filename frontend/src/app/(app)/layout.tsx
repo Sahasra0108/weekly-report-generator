@@ -2,6 +2,7 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
+import { ChatWidget } from "@/components/assistant/ChatWidget";
 
 export default function AppLayout({
   children,
@@ -11,6 +12,7 @@ export default function AppLayout({
   return (
     <ProtectedRoute>
       <AppShell>{children}</AppShell>
+       <ChatWidget />
     </ProtectedRoute>
   );
 }

@@ -31,17 +31,23 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await mutate({ email, password });
-    
     } catch {
-       
+      // useMutation holds the error state
     }
   }
 
   if (authLoading) return <Spinner label="Checking your session" />;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-5 text-sm font-semibold text-slate-900">Sign in</h2>
+    <>
+      <div className="mb-7">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
+          Welcome back
+        </h1>
+        <p className="mt-1.5 text-sm text-muted">
+          Sign in to submit or review this week&apos;s reports
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <ErrorMessage message={error} />}
@@ -73,12 +79,15 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
+      <p className="mt-6 text-sm text-muted">
         No account?{" "}
-        <Link href="/register" className="font-medium text-slate-900 hover:underline">
+        <Link
+          href="/register"
+          className="font-medium text-primary-text hover:underline"
+        >
           Create one
         </Link>
       </p>
-    </div>
+    </>
   );
 }

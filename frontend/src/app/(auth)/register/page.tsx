@@ -4,7 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Button, ErrorMessage, Field, Input, Spinner, PasswordStrength } from "@/components/ui";
+import {
+  Button,
+  ErrorMessage,
+  Field,
+  Input,
+  PasswordStrength,
+  Spinner,
+} from "@/components/ui";
 import { useAuth } from "@/lib/auth-context";
 import { useMutation } from "@/hooks/useApi";
 import { passwordIsValid } from "@/lib/password";
@@ -67,15 +74,22 @@ export default function RegisterPage() {
     try {
       await mutate(payload);
     } catch {
-      // useMutation holds the error state.
+      // useMutation holds the error state
     }
   }
 
   if (authLoading) return <Spinner label="Checking your session" />;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-5 text-sm font-semibold text-slate-900">Create an account</h2>
+    <>
+      <div className="mb-7">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
+          Create your account
+        </h1>
+        <p className="mt-1.5 text-sm text-muted">
+          New accounts join as team members. An admin can change your role later.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {(localError || error) && <ErrorMessage message={localError ?? error!} />}
@@ -139,12 +153,12 @@ export default function RegisterPage() {
         </Button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-slate-500">
+      <p className="mt-6 text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-slate-900 hover:underline">
+        <Link href="/login" className="font-medium text-primary-text hover:underline">
           Sign in
         </Link>
       </p>
-    </div>
+    </>
   );
 }

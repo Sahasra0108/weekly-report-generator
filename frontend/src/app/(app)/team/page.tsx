@@ -36,6 +36,7 @@ import type {
   TrendPoint,
   WorkTypeHours,
 } from "@/types";
+import { AiSummaryCard } from "@/components/assistant/AiSummaryCard";
 
 export default function TeamDashboardPage() {
   const [week, setWeek] = useState(currentWeekStart());
@@ -206,7 +207,9 @@ export default function TeamDashboardPage() {
               )}
             </Card>
           </div>
-
+          <div className="mt-5">
+            <AiSummaryCard weekStart={week} />
+          </div>
           <div className="mt-5">
             <Card title="Recent activity" description="Submissions and review decisions">
               {activity.loading && <Spinner />}
@@ -218,13 +221,12 @@ export default function TeamDashboardPage() {
                   {activity.data.map((item) => (
                     <li key={`${item.action ?? "submit"}-${item.id}`} className="flex gap-3">
                       <span
-                        className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-                          item.action === "APPROVED"
+                        className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${item.action === "APPROVED"
                             ? "bg-green-500"
                             : item.action === "REQUESTED_CHANGES"
                               ? "bg-amber-500"
                               : "bg-blue-500"
-                        }`}
+                          }`}
                       />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm text-slate-700">
