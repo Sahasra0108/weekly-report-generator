@@ -82,8 +82,8 @@ export function ReportContent({ report }: { report: ReportDetail }) {
                                     <Td className="text-slate-600">{task.output || "—"}</Td>
                                 </tr>
                             ))}
-                            <tr className="font-medium">
-                                <Td className="text-slate-500" />
+                            <tr className="border-t-2 border-line font-medium">
+                                <Td className="text-muted">Total</Td>
                                 <Td /> <Td /> <Td /> <Td />
                                 <Td className="text-right tabular-nums">{totalPlanned.toFixed(1)}</Td>
                                 <Td className="text-right tabular-nums">{totalSpent.toFixed(1)}</Td>

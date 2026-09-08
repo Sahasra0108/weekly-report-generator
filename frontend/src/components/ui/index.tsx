@@ -237,9 +237,11 @@ export function Card({
       )}
     >
       {(title || actions) && (
-        <header className="flex flex-wrap items-start justify-between gap-4 border-b border-line px-5 py-4">
+        <header className="flex flex-wrap items-start justify-between gap-4 rounded-t-lg border-b border-primary-border/40 bg-primary-soft px-5 py-3.5">
           <div>
-            {title && <h2 className="text-sm font-semibold text-ink">{title}</h2>}
+            {title && (
+              <h2 className="text-sm font-semibold tracking-tight text-ink">{title}</h2>
+            )}
             {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
           </div>
           {actions && <div className="flex shrink-0 gap-2">{actions}</div>}

@@ -44,7 +44,7 @@ export function ChatLauncher() {
   return (
     <button
       onClick={() => setOpen(true)}
-      className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-primary-text transition-colors hover:bg-primary-soft"
+      className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-white/85 transition-colors hover:bg-white/15 hover:text-white"
     >
       <Sparkles size={16} />
       <span className="hidden sm:inline">Ask AI</span>
@@ -203,11 +203,10 @@ export function ChatWidget() {
             ) : (
               <div className="space-y-1.5">
                 <div
-                  className={`rounded-lg rounded-bl-sm px-3.5 py-2.5 text-sm ${
-                    message.failed
+                  className={`rounded-lg rounded-bl-sm px-3.5 py-2.5 text-sm ${message.failed
                       ? "bg-danger-soft text-danger"
                       : "bg-surface-muted text-ink-soft"
-                  }`}
+                    }`}
                 >
                   <div className="whitespace-pre-wrap">{message.content}</div>
                 </div>

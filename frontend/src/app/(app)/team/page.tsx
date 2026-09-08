@@ -71,7 +71,7 @@ export default function TeamDashboardPage() {
               ))}
             </Select>
             <Link href="/team/sections">
-              <Button variant="secondary">Compare week</Button>
+              <Button variant="secondary" className="whitespace-nowrap">Compare week</Button>
             </Link>
           </div>
         }
@@ -110,6 +110,10 @@ export default function TeamDashboardPage() {
               sublabel="unresolved across the team"
               tone={s.open_blockers > 0 ? "red" : "default"}
             />
+          </div>
+
+          <div className="mt-5 mb-5">
+            <AiSummaryCard weekStart={week} />
           </div>
 
           <div className="mb-5 grid gap-5 lg:grid-cols-2">
@@ -211,9 +215,6 @@ export default function TeamDashboardPage() {
                 </Table>
               )}
             </Card>
-          </div>
-          <div className="mt-5">
-            <AiSummaryCard weekStart={week} />
           </div>
           <div className="mt-5">
             <Card title="Recent activity" description="Submissions and review decisions">

@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="min-h-screen bg-canvas">
-            <header className="sticky top-0 z-30 border-b border-sidebar-edge bg-white/60 backdrop-blur-xl">
+            <header className="sticky top-0 z-30 border-b border-primary/20 bg-primary text-white backdrop-blur">
                 <div className="flex h-14 items-center justify-between px-4 sm:px-6">
                     <div className="flex items-center gap-3">
                         <button
@@ -94,10 +94,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </button>
 
                         <Link href="/reports" className="flex items-center gap-2.5">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-[#8b5cf6] text-xs font-bold text-white shadow-sm">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/20 text-xs font-bold text-white">
                                 W
                             </span>
-                            <span className="text-sm font-semibold tracking-tight text-ink">
+                            <span className="text-sm font-semibold tracking-tight text-white">
                                 Weekly Reports
                             </span>
                         </Link>
@@ -106,7 +106,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         <ChatLauncher />
                         <button
                             onClick={logout}
-                            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-primary-soft hover:text-primary-text"
+                            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-white/85 transition-colors hover:bg-white/15 hover:text-white"
                         >
                             <LogOut size={16} />
                             <span className="hidden sm:inline">Sign out</span>

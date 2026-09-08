@@ -55,25 +55,26 @@ USERS = [
 ]
 
 PROJECTS = [
-    ("Client A - Portal Rebuild", "Customer-facing portal rewrite", "#2563eb"),
-    ("Internal Tooling", "Developer productivity and internal systems", "#16a34a"),
-    ("R&D", "Prototypes and technical exploration", "#9333ea"),
-    ("Marketing Site", "Public website and campaign pages", "#ea580c"),
+    ("Customer Portal v2", "Rebuild of the customer-facing web portal", "#2563eb"),
+    ("Payments Integration", "Card and bank transfer processing", "#16a34a"),
+    ("Mobile App", "iOS and Android client", "#9333ea"),
+    ("Platform Infrastructure", "CI/CD, monitoring, and developer tooling", "#ea580c"),
+    ("Data Migration", "Moving legacy records onto the new schema", "#0891b2"),
 ]
 
 TASK_NAMES = [
-    "Implement report submission endpoint",
-    "Refactor authentication middleware",
-    "Fix pagination bug on dashboard",
-    "Write integration tests for review flow",
-    "Migrate legacy user table",
-    "Build chart components for insights page",
-    "Code review for payments module",
-    "Update API documentation",
-    "Optimise slow dashboard query",
-    "Set up CI pipeline for staging",
-    "Design tokens for the component library",
-    "Investigate memory leak in worker process",
+    "Build the checkout confirmation screen",
+    "Fix session timeout on the account page",
+    "Add retry handling to the payment webhook",
+    "Write integration tests for the refund flow",
+    "Migrate customer addresses to the new table",
+    "Investigate slow queries on the orders endpoint",
+    "Review and merge the notification service PR",
+    "Update the API reference for v2 endpoints",
+    "Set up error tracking in staging",
+    "Refactor the form validation helpers",
+    "Fix layout issues on small screens",
+    "Debug intermittent test failures in CI",
 ]
 
 OUTPUTS = [
@@ -340,18 +341,19 @@ def add_version(db: Session, report: Report, submitted_at: datetime) -> ReportVe
     db.flush()
     return version
 
-
 def seed_reports(db: Session, members: list[User], manager: User, projects: list[Project]) -> None:
     this_monday = monday_of(date.today())
     created = 0
 
-    for week_offset in range(WEEKS_OF_HISTORY, 0, -1):
+    # Ends at 0, which is the current week - so the dashboard has data the
+    # moment it loads rather than only showing history.
+    for week_offset in range(WEEKS_OF_HISTORY - 1, -1, -1):
         week_start = this_monday - timedelta(weeks=week_offset)
-        is_recent = week_offset <= 2
+        is_recent = week_offset <= 1
 
         for member in members:
-            # Leave a couple of gaps so "not yet started" is visible on the dashboard
-            if is_recent and random.random() < 0.2:
+            # Leave a gap so "not yet started" is visible on the dashboard
+            if is_recent and random.random() < 0.12:
                 continue
 
             if week_offset > 2:
@@ -360,13 +362,26 @@ def seed_reports(db: Session, members: list[User], manager: User, projects: list
                 status = random.choice(
                     [ReportStatus.APPROVED, ReportStatus.APPROVED, ReportStatus.NEEDS_CORRECTION]
                 )
-            else:
+            elif week_offset == 1:
                 status = random.choice(
-                    [ReportStatus.SUBMITTED, ReportStatus.SUBMITTED, ReportStatus.DRAFT, ReportStatus.NEEDS_CORRECTION]
+                    [ReportStatus.APPROVED, ReportStatus.SUBMITTED, ReportStatus.NEEDS_CORRECTION]
+                )
+            else:
+                # Current week: something in every state so the dashboard and
+                # the compliance chart both have something to show.
+                status = random.choice(
+                    [
+                        ReportStatus.SUBMITTED,
+                        ReportStatus.SUBMITTED,
+                        ReportStatus.NEEDS_CORRECTION,
+                        ReportStatus.APPROVED,
+                    ]
                 )
 
             report = build_report(db, member, random.choice(projects), week_start, status)
-            submitted_at = datetime.combine(week_start + timedelta(days=4), datetime.min.time()) + timedelta(hours=17)
+            submitted_at = datetime.combine(
+                week_start + timedelta(days=4), datetime.min.time()
+            ) + timedelta(hours=17)
 
             if status is ReportStatus.DRAFT:
                 created += 1
@@ -391,8 +406,8 @@ def seed_reports(db: Session, members: list[User], manager: User, projects: list
                 report.reviewed_by_id = manager.id
 
             elif status is ReportStatus.APPROVED:
-                # About a third of approved reports went through a correction cycle first,
-                # so version history has something to show.
+                # About a third of approved reports went through a correction
+                # cycle first, so version history has something to show.
                 if random.random() < 0.35:
                     db.add(
                         ReviewComment(
@@ -428,7 +443,6 @@ def seed_reports(db: Session, members: list[User], manager: User, projects: list
 
     db.commit()
     print(f"Seeded {created} reports across {WEEKS_OF_HISTORY} weeks.")
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Seed the weekly reports database.")
