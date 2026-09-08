@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: weekly_reports
+      MYSQL_USER: wr_user
+      MYSQL_PASSWORD: wr_password
+    ports:
+      - "3307:3306"   
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-P",
+          "3306",
+          "--protocol=TCP",
+          "-uwr_user",
+          "-pwr_password",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+
+  backend:
+    build: ./backend
+    restart: on-failure
+    environment:
+      DATABASE_URL: mysql+pymysql://wr_user:wr_password@db:3306/weekly_reports
+      SECRET_KEY: local_development_secret_change_in_production
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      FRONTEND_ORIGIN: http://localhost:3000
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: gemini-2.5-flash
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
