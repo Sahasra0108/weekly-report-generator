@@ -102,7 +102,7 @@ class ReportTask(Base):
     )
     status: Mapped[TaskStatus] = mapped_column(
         Enum(TaskStatus, native_enum=False, length=20),
-        default=TaskStatus.NOT_STARTED, nullable=False,
+        default=TaskStatus.IN_PROGRESS, nullable=False,
     )
     planned_percent: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     actual_percent: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

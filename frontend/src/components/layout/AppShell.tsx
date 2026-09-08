@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
+import { ChatLauncher } from "@/components/assistant/ChatWidget";
 
 interface NavItem {
     href: string;
@@ -101,14 +102,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                             </span>
                         </Link>
                     </div>
-
-                    <button
-                        onClick={logout}
-                        className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-primary-soft hover:text-primary-text"
-                    >
-                        <LogOut size={16} />
-                        <span className="hidden sm:inline">Sign out</span>
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <ChatLauncher />
+                        <button
+                            onClick={logout}
+                            className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-primary-soft hover:text-primary-text"
+                        >
+                            <LogOut size={16} />
+                            <span className="hidden sm:inline">Sign out</span>
+                        </button>
+                    </div>
                 </div>
             </header>
 

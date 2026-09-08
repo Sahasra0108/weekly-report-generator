@@ -10,6 +10,7 @@ import {
     Field,
     Input,
     PageHeader,
+    PasswordInput,
 } from "@/components/ui";
 import { useMutation } from "@/hooks/useApi";
 import { api } from "@/lib/api";
@@ -122,8 +123,7 @@ export default function SettingsPage() {
                         )}
 
                         <Field label="Current password" required>
-                            <Input
-                                type="password"
+                            <PasswordInput
                                 value={current}
                                 onChange={(e) => {
                                     setCurrent(e.target.value);
@@ -134,8 +134,7 @@ export default function SettingsPage() {
                         </Field>
 
                         <Field label="New password" required>
-                            <Input
-                                type="password"
+                            <PasswordInput
                                 value={next}
                                 onChange={(e) => {
                                     setNext(e.target.value);
@@ -147,8 +146,7 @@ export default function SettingsPage() {
                         </Field>
 
                         <Field label="Confirm new password" required>
-                            <Input
-                                type="password"
+                            <PasswordInput
                                 value={confirm}
                                 onChange={(e) => {
                                     setConfirm(e.target.value);

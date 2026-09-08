@@ -14,7 +14,7 @@ from app.schemas.user import UserBrief
 class TaskIn(BaseModel):
     task_name: str = Field(min_length=1, max_length=255)
     priority: TaskPriority = TaskPriority.MEDIUM
-    status: TaskStatus = TaskStatus.NOT_STARTED
+    status: TaskStatus = TaskStatus.IN_PROGRESS
     planned_percent: int = Field(default=0, ge=0, le=100)
     actual_percent: int = Field(default=0, ge=0, le=100)
     hours_planned: Decimal = Field(default=Decimal("0"), ge=0, le=999)

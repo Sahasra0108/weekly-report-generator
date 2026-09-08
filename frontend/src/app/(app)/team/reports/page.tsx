@@ -28,6 +28,7 @@ import type {
   ReportSummary,
   User,
 } from "@/types";
+import { useAuth } from "@/lib/auth-context";
 
 const STATUSES: { value: ReportStatus | ""; label: string }[] = [
   { value: "", label: "All statuses" },
@@ -42,6 +43,7 @@ export default function TeamReportsPage() {
   const [status, setStatus] = useState<ReportStatus | "">("");
   const [week, setWeek] = useState("");
   const [page, setPage] = useState(1);
+  const { user } = useAuth();
 
   const { data: users } = useQuery<User[]>("/users");
   const { data: projects } = useQuery<Project[]>("/projects");
@@ -220,14 +222,17 @@ export default function TeamReportsPage() {
                       ) : (
                         <span className="text-slate-400">—</span>
                       )}
-                    </Td>
-                    <Td className="text-right">
+                    </Td>                    <Td className="text-right">
                       <Link href={`/team/reports/${report.id}`}>
                         <Button variant="secondary">
-                          {report.status === "SUBMITTED" ? "Review" : "View"}
+                          {report.status === "SUBMITTED" &&
+                            report.author.id !== user?.id
+                            ? "Review"
+                            : "View"}
                         </Button>
                       </Link>
                     </Td>
+
                   </tr>
                 ))}
               </tbody>

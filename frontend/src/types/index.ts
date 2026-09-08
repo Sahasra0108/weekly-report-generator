@@ -2,7 +2,6 @@ export type RoleName = "ADMIN" | "MANAGER" | "MEMBER";
 export type ReportStatus = "DRAFT" | "SUBMITTED" | "NEEDS_CORRECTION" | "APPROVED";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 export type TaskStatus =
-  | "NOT_STARTED"
   | "IN_PROGRESS"
   | "COMPLETED"
   | "BLOCKED"

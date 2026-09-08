@@ -21,6 +21,7 @@ import { useQuery } from "@/hooks/useApi";
 import { qs } from "@/lib/api";
 import { formatDate, formatWeekRange } from "@/lib/dates";
 import type { Paginated, Project, ReportStatus, ReportSummary } from "@/types";
+import { useAuth } from "@/lib/auth-context";
 
 const STATUS_OPTIONS: { value: ReportStatus | ""; label: string }[] = [
   { value: "", label: "All statuses" },
@@ -31,6 +32,7 @@ const STATUS_OPTIONS: { value: ReportStatus | ""; label: string }[] = [
 ];
 
 export default function ReportHistoryPage() {
+  const { user } = useAuth();
   const [status, setStatus] = useState<ReportStatus | "">("");
   const [projectId, setProjectId] = useState<string>("");
   const [page, setPage] = useState(1);
@@ -40,11 +42,12 @@ export default function ReportHistoryPage() {
   const query = qs({
     page,
     page_size: 15,
+    user_id: user?.id ?? null,
     status: status || null,
     project_id: projectId || null,
   });
   const { data, loading, error } = useQuery<Paginated<ReportSummary>>(
-    `/reports${query}`,
+    user ? `/reports${query}` : null,
   );
 
   function updateFilter(fn: () => void) {

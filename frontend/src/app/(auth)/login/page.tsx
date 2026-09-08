@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Button, ErrorMessage, Field, Input, Spinner } from "@/components/ui";
+import { Button, ErrorMessage, Field, Input, PasswordInput, Spinner } from "@/components/ui";
 import { useAuth } from "@/lib/auth-context";
 import { useMutation } from "@/hooks/useApi";
 
@@ -32,7 +32,6 @@ export default function LoginPage() {
     try {
       await mutate({ email, password });
     } catch {
-      // useMutation holds the error state
     }
   }
 
@@ -64,8 +63,7 @@ export default function LoginPage() {
         </Field>
 
         <Field label="Password" required>
-          <Input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"

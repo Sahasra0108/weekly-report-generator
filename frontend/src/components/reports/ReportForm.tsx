@@ -23,7 +23,6 @@ import type {
 
 const PRIORITIES: TaskPriority[] = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 const TASK_STATUSES: { value: TaskStatus; label: string }[] = [
-  { value: "NOT_STARTED", label: "Not started" },
   { value: "IN_PROGRESS", label: "In progress" },
   { value: "COMPLETED", label: "Completed" },
   { value: "BLOCKED", label: "Blocked" },
@@ -53,6 +52,8 @@ export function ReportForm({
   const f = useReportForm(report);
   const isEdit = Boolean(report);
 
+  const errors = { ...f.visibleErrors, ...fieldErrors };
+
   const weekOptions = recentWeeks(8).concat(shiftWeeks(recentWeeks(1)[0], 1));
 
   async function handleSave() {
@@ -60,6 +61,8 @@ export function ReportForm({
   }
 
   async function handleSubmit() {
+    f.touchAll(); // reveal everything that's missing
+    if (!f.readyToSubmit) return;
     if (onSubmitForReview) await onSubmitForReview(f.toPayload());
   }
 
@@ -93,14 +96,16 @@ export function ReportForm({
             </Select>
           </Field>
 
-          <Field label="Project or category" error={fieldErrors.project_id}>
+          <Field label="Project or category" required error={errors.project_id}>
             <Select
               value={f.form.project_id ?? ""}
               onChange={(e) =>
                 f.setField("project_id", e.target.value ? Number(e.target.value) : null)
               }
+              onBlur={() => f.touch("project_id")}
+              invalid={Boolean(errors.project_id)}
             >
-              <option value="">No project</option>
+              <option value="">Choose a project</option>
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -114,7 +119,7 @@ export function ReportForm({
       {/* ---- Tasks completed ---- */}
       <Card
         title="Tasks completed"
-        description="What you worked on this week"
+        description="What you worked on this week — at least one is required"
         actions={
           <Button variant="secondary" onClick={f.addTask} type="button">
             Add task
@@ -138,13 +143,14 @@ export function ReportForm({
                   <Field
                     label={`Task ${i + 1}`}
                     required
-                    error={fieldErrors[`tasks.${i}.task_name`]}
+                    error={errors[`tasks.${i}.task_name`]}
                   >
                     <Input
                       value={task.task_name}
                       onChange={(e) => f.updateTask(i, "task_name", e.target.value)}
+                      onBlur={() => f.touch(`tasks.${i}.task_name`)}
                       placeholder="Implement the report submission endpoint"
-                      invalid={Boolean(fieldErrors[`tasks.${i}.task_name`])}
+                      invalid={Boolean(errors[`tasks.${i}.task_name`])}
                     />
                   </Field>
                 </div>
@@ -201,7 +207,11 @@ export function ReportForm({
                   />
                 </Field>
 
-                <Field label="Actual %" error={fieldErrors[`tasks.${i}.actual_percent`]}>
+                <Field
+                  label="Actual %"
+                  required
+                  error={errors[`tasks.${i}.actual_percent`]}
+                >
                   <Input
                     type="number"
                     min={0}
@@ -210,6 +220,8 @@ export function ReportForm({
                     onChange={(e) =>
                       f.updateTask(i, "actual_percent", Number(e.target.value))
                     }
+                    onBlur={() => f.touch(`tasks.${i}.actual_percent`)}
+                    invalid={Boolean(errors[`tasks.${i}.actual_percent`])}
                   />
                 </Field>
 
@@ -403,7 +415,7 @@ export function ReportForm({
       {/* ---- Hours ---- */}
       <Card
         title="Hours by task type"
-        description={`Total: ${f.totalHours.toFixed(1)} hours`}
+        description={`Required. Total so far: ${f.totalHours.toFixed(1)} hours`}
       >
         <div className="grid gap-3 sm:grid-cols-3">
           {WORK_TYPES.map((type) => (
@@ -442,18 +454,48 @@ export function ReportForm({
       </Card>
 
       {/* ---- Actions ---- */}
-      <div className="flex flex-wrap items-center justify-end gap-2 pb-8">
-        <Button variant="ghost" type="button" onClick={() => router.back()}>
-          Cancel
-        </Button>
-        <Button variant="secondary" type="button" onClick={handleSave} loading={saving}>
-          Save draft
-        </Button>
-        {onSubmitForReview && (
-          <Button type="button" onClick={handleSubmit} loading={saving}>
-            Submit for review
-          </Button>
+      {/* ---- Actions ---- */}
+      <div className="space-y-3 pb-8">
+        {!f.readyToSubmit && (
+          <div className="rounded-md border border-warning/25 bg-warning-soft px-4 py-3">
+            <p className="text-sm font-medium text-warning">
+              Before you can submit this report:
+            </p>
+            <ul className="mt-1.5 space-y-1">
+              {f.submissionProblems.map((problem) => (
+                <li
+                  key={problem}
+                  className="flex items-center gap-1.5 text-sm text-warning"
+                >
+                  <span className="h-1 w-1 shrink-0 rounded-full bg-current" />
+                  {problem}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs text-warning/80">
+              You can still save this as a draft and come back to it.
+            </p>
+          </div>
         )}
+
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button variant="ghost" type="button" onClick={() => router.back()}>
+            Cancel
+          </Button>
+          <Button variant="secondary" type="button" onClick={handleSave} loading={saving}>
+            Save draft
+          </Button>
+          {onSubmitForReview && (
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              loading={saving}
+              disabled={!f.readyToSubmit}
+            >
+              Submit for review
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

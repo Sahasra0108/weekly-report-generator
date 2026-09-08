@@ -6,6 +6,7 @@ import { Button, Card, ErrorMessage, Field, Textarea } from "@/components/ui";
 import { useMutation } from "@/hooks/useApi";
 import { api } from "@/lib/api";
 import type { ReportDetail, ReviewAction } from "@/types";
+import { useAuth } from "@/lib/auth-context";
 
 interface Props {
   report: ReportDetail;
@@ -21,6 +22,7 @@ export function ReviewPanel({ report, onReviewed }: Props) {
     (payload: { action: ReviewAction; comment: string | null }) =>
       api.post<ReportDetail>(`/reports/${report.id}/review`, payload),
   );
+  const { user } = useAuth();
 
   if (report.status !== "SUBMITTED") {
     return (
@@ -41,7 +43,6 @@ export function ReviewPanel({ report, onReviewed }: Props) {
       setLocalError("Choose whether to approve or request changes");
       return;
     }
-    // Mirrors the backend rule: a rejection must explain itself.
     if (action === "REQUESTED_CHANGES" && !comment.trim()) {
       setLocalError("Explain what needs to change before sending this back");
       return;
@@ -53,6 +54,17 @@ export function ReviewPanel({ report, onReviewed }: Props) {
     } catch {
       // useMutation holds the error
     }
+  }
+
+  if (report.author.id === user?.id) {
+    return (
+      <Card title="Review">
+        <p className="text-sm text-muted">
+          You cannot review your own report. Another manager or an admin needs
+          to review this one.
+        </p>
+      </Card>
+    );
   }
 
   return (
@@ -70,11 +82,10 @@ export function ReviewPanel({ report, onReviewed }: Props) {
               setAction("APPROVED");
               setLocalError(null);
             }}
-            className={`rounded-md border px-4 py-3 text-left transition-colors ${
-              action === "APPROVED"
-                ? "border-green-400 bg-green-50 ring-1 ring-green-300"
-                : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-            }`}
+            className={`rounded-md border px-4 py-3 text-left transition-colors ${action === "APPROVED"
+              ? "border-green-400 bg-green-50 ring-1 ring-green-300"
+              : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+              }`}
           >
             <p className="text-sm font-medium text-slate-900">Approve</p>
             <p className="mt-0.5 text-xs text-slate-500">
@@ -88,11 +99,10 @@ export function ReviewPanel({ report, onReviewed }: Props) {
               setAction("REQUESTED_CHANGES");
               setLocalError(null);
             }}
-            className={`rounded-md border px-4 py-3 text-left transition-colors ${
-              action === "REQUESTED_CHANGES"
-                ? "border-amber-400 bg-amber-50 ring-1 ring-amber-300"
-                : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-            }`}
+            className={`rounded-md border px-4 py-3 text-left transition-colors ${action === "REQUESTED_CHANGES"
+              ? "border-amber-400 bg-amber-50 ring-1 ring-amber-300"
+              : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+              }`}
           >
             <p className="text-sm font-medium text-slate-900">Request changes</p>
             <p className="mt-0.5 text-xs text-slate-500">

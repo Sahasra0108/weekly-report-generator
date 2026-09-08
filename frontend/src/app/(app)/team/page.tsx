@@ -37,6 +37,7 @@ import type {
   WorkTypeHours,
 } from "@/types";
 import { AiSummaryCard } from "@/components/assistant/AiSummaryCard";
+import { useAuth } from "@/lib/auth-context";
 
 export default function TeamDashboardPage() {
   const [week, setWeek] = useState(currentWeekStart());
@@ -47,6 +48,7 @@ export default function TeamDashboardPage() {
   const projects = useQuery<ProjectWorkload[]>("/dashboard/projects");
   const workTypes = useQuery<WorkTypeHours[]>("/dashboard/work-types");
   const activity = useQuery<ActivityItem[]>("/dashboard/activity?limit=12");
+  const { user } = useAuth();
 
   const s = summary.data;
 
@@ -196,7 +198,10 @@ export default function TeamDashboardPage() {
                               href={`/team/reports/${member.report_id}`}
                               className="text-sm font-medium text-slate-900 hover:underline"
                             >
-                              {member.status === "SUBMITTED" ? "Review" : "View"}
+                              {member.status === "SUBMITTED" &&
+                                member.user_id !== user?.id
+                                ? "Review"
+                                : "View"}
                             </Link>
                           )}
                         </Td>
@@ -222,10 +227,10 @@ export default function TeamDashboardPage() {
                     <li key={`${item.action ?? "submit"}-${item.id}`} className="flex gap-3">
                       <span
                         className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${item.action === "APPROVED"
-                            ? "bg-green-500"
-                            : item.action === "REQUESTED_CHANGES"
-                              ? "bg-amber-500"
-                              : "bg-blue-500"
+                          ? "bg-green-500"
+                          : item.action === "REQUESTED_CHANGES"
+                            ? "bg-amber-500"
+                            : "bg-blue-500"
                           }`}
                       />
                       <div className="min-w-0 flex-1">

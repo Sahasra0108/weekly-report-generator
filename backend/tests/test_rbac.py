@@ -7,10 +7,10 @@ def next_monday() -> str:
     return monday.isoformat()
 
 
-def minimal_report_payload(week: str | None = None) -> dict:
+def minimal_report_payload(week: str | None = None, project_id: int | None = 1) -> dict:
     return {
         "week_start_date": week or next_monday(),
-        "project_id": None,
+        "project_id": project_id,
         "notes": None,
         "links": None,
         "tasks": [
@@ -341,3 +341,24 @@ class TestPrivilegeEscalation:
             },
         )
         assert res.status_code == 422
+    
+    def test_incomplete_report_cannot_be_submitted(self, client, users, login_as):
+        login_as("member@test.com")
+
+        payload = minimal_report_payload()
+        payload["hours"] = []  # no hours recorded
+
+        report_id = client.post("/api/v1/reports", json=payload).json()["id"]
+        res = client.post(f"/api/v1/reports/{report_id}/submit")
+
+        assert res.status_code == 400
+        assert "hours" in res.json()["detail"].lower()
+
+    def test_manager_my_reports_shows_only_their_own(self, client, users, login_as):
+        self._create_report_as(client, login_as, "member@test.com")
+
+        login_as("manager@test.com")
+        manager_id = users["manager"].id
+        items = client.get(f"/api/v1/reports?user_id={manager_id}").json()["items"]
+
+        assert all(item["author"]["id"] == manager_id for item in items)

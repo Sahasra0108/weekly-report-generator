@@ -2,12 +2,13 @@
 
 import React, { forwardRef } from "react";
 import type { ReportStatus } from "@/types";
+import { Eye, EyeOff } from "lucide-react";
 
 function cx(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-/* ---------- Button ---------- */
+/* Button */
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -49,7 +50,42 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-/* ---------- Form fields ---------- */
+/* Password input */
+
+export const PasswordInput = forwardRef<
+  HTMLInputElement,
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> & { invalid?: boolean }
+>(({ className, invalid, ...props }, ref) => {
+  const [visible, setVisible] = React.useState(false);
+
+  return (
+    <div className="relative">
+      <input
+        ref={ref}
+        type={visible ? "text" : "password"}
+        className={cx(
+          controlClasses,
+          "pr-10",
+          invalid && "border-danger",
+          className,
+        )}
+        {...props}
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        tabIndex={-1}
+        className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded p-1 text-muted transition-colors hover:bg-surface-muted hover:text-ink"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff size={16} /> : <Eye size={16} />}
+      </button>
+    </div>
+  );
+});
+PasswordInput.displayName = "PasswordInput";
+
+/* Form fields */
 
 interface FieldProps {
   label: string;
@@ -118,7 +154,7 @@ export const Select = forwardRef<
 ));
 Select.displayName = "Select";
 
-/* ---------- Status badge ---------- */
+/* Status badge  */
 
 const statusStyles: Record<ReportStatus | "NOT_STARTED", string> = {
   DRAFT: "bg-surface-muted text-muted ring-line-strong",
@@ -178,7 +214,7 @@ export function Badge({
   );
 }
 
-/* ---------- Layout primitives ---------- */
+/* Layout primitives */
 
 export function Card({
   title,
@@ -269,7 +305,7 @@ export function EmptyState({
   );
 }
 
-/* ---------- Table ---------- */
+/* Table */
 
 export function Table({ children }: { children: React.ReactNode }) {
   return (

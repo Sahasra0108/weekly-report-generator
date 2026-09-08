@@ -9,6 +9,7 @@ import {
   ErrorMessage,
   Field,
   Input,
+  PasswordInput,
   PasswordStrength,
   Spinner,
 } from "@/components/ui";
@@ -125,9 +126,8 @@ export default function RegisterPage() {
           />
         </Field>
 
-        <Field label="Password" required error={fieldErrors.password}>
-          <Input
-            type="password"
+                <Field label="Password" required error={fieldErrors.password}>
+          <PasswordInput
             value={form.password}
             onChange={(e) => set("password", e.target.value)}
             autoComplete="new-password"
@@ -138,8 +138,7 @@ export default function RegisterPage() {
         </Field>
 
         <Field label="Confirm password" required>
-          <Input
-            type="password"
+          <PasswordInput
             value={form.confirm}
             onChange={(e) => set("confirm", e.target.value)}
             autoComplete="new-password"

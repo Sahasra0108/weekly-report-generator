@@ -35,7 +35,7 @@ export const WORK_TYPE_LABELS: Record<WorkType, string> = {
 const emptyTask = (): Task => ({
   task_name: "",
   priority: "MEDIUM",
-  status: "NOT_STARTED",
+  status: "IN_PROGRESS",
   planned_percent: 0,
   actual_percent: 0,
   hours_planned: 0,
@@ -271,6 +271,67 @@ export function useReportForm(report?: ReportDetail) {
     };
   }, [form]);
 
+  const [touched, setTouched] = useState<Set<string>>(new Set());
+
+  const touch = useCallback((key: string) => {
+    setTouched((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
+  }, []);
+
+  const touchAll = useCallback(() => {
+    const keys = new Set<string>(["project_id"]);
+    form.tasks.forEach((_, i) => {
+      keys.add(`tasks.${i}.task_name`);
+      keys.add(`tasks.${i}.actual_percent`);
+    });
+    setTouched(keys);
+  }, [form.tasks]);
+
+  /** Field-level rules, keyed the same way the backend keys its 422 errors. */
+  const validationErrors: Record<string, string> = {};
+
+  if (!form.project_id) {
+    validationErrors.project_id = "Choose a project before submitting";
+  }
+
+  form.tasks.forEach((task, i) => {
+    if (!task.task_name.trim()) {
+      validationErrors[`tasks.${i}.task_name`] = "Give the task a name";
+    }
+    if (Number(task.actual_percent) <= 0) {
+      validationErrors[`tasks.${i}.actual_percent`] =
+        "Record how far this task got";
+    }
+    if (Number(task.planned_percent) < 0 || Number(task.planned_percent) > 100) {
+      validationErrors[`tasks.${i}.planned_percent`] = "Must be between 0 and 100";
+    }
+    if (Number(task.hours_spent) < 0) {
+      validationErrors[`tasks.${i}.hours_spent`] = "Cannot be negative";
+    }
+  });
+
+  /** Only surface an error once its field has been touched. */
+  const visibleErrors: Record<string, string> = Object.fromEntries(
+    Object.entries(validationErrors).filter(([key]) => touched.has(key)),
+  );
+
+  const submissionProblems: string[] = [];
+
+  if (!form.project_id) {
+    submissionProblems.push("Select a project or category");
+  }
+  if (!form.tasks.some((t) => t.task_name.trim())) {
+    submissionProblems.push("Add at least one completed task");
+  }
+  if (form.tasks.some((t) => !t.task_name.trim() || Number(t.actual_percent) <= 0)) {
+    submissionProblems.push("Complete every task row, or remove the empty ones");
+  }
+  if (form.hours.reduce((sum, h) => sum + Number(h.hours || 0), 0) <= 0) {
+    submissionProblems.push("Record your hours by task type");
+  }
+
+  const readyToSubmit = submissionProblems.length === 0;
+
+
   return {
     form,
     setField,
@@ -291,6 +352,11 @@ export function useReportForm(report?: ReportDetail) {
     setHours,
     hoursFor,
     totalHours,
+    touch,
+    touchAll,
+    visibleErrors,
+    submissionProblems,
+    readyToSubmit,
     toPayload,
   };
 }

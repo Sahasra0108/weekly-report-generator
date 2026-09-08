@@ -62,6 +62,9 @@ def users(db):
         db.add(user)
         created[key] = user
 
+    from app.models import Project
+    db.add(Project(name="Test Project", created_by_id=created["admin"].id))
+
     db.commit()
     for user in created.values():
         db.refresh(user)

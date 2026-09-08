@@ -200,6 +200,23 @@ def build_snapshot(report: Report) -> dict:
     }
 
 
+def _submission_problems(report: Report) -> list[str]:
+    problems: list[str] = []
+
+    if report.project_id is None:
+        problems.append("Select a project or category")
+
+    named_tasks = [t for t in report.tasks if t.task_name.strip()]
+    if not named_tasks:
+        problems.append("Add at least one completed task")
+
+    total_hours = sum((h.hours for h in report.hours), Decimal("0"))
+    if total_hours <= 0:
+        problems.append("Record your hours by task type")
+
+    return problems
+
+
 def submit_report(db: Session, report: Report, user: User) -> Report:
     if report.user_id != user.id:
         raise HTTPException(
@@ -213,10 +230,11 @@ def submit_report(db: Session, report: Report, user: User) -> Report:
             detail=f"A report with status {report.status.value} cannot be submitted",
         )
 
-    if not report.tasks:
+    problems = _submission_problems(report)
+    if problems:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Add at least one completed task before submitting",
+            detail="This report is not ready to submit: " + "; ".join(problems),
         )
 
     now = datetime.now(timezone.utc)
@@ -311,8 +329,7 @@ def list_reports(
         selectinload(Report.hours),
     )
 
-    # Members are confined to their own reports regardless of the filters they send.
-    if is_manager(viewer):
+    if is_manager(viewer) and user_id != viewer.id:
         if user_id is not None:
             stmt = stmt.where(Report.user_id == user_id)
         # Drafts belong to their author until submitted.
