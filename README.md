@@ -5,9 +5,11 @@ Team members file a weekly report against a fixed field structure; managers
 review, approve, or send it back with a comment. Every submission is versioned,
 so past versions stay readable in full.
 
-**Live demo:** https://weekly-report-generator-bh6x.vercel.app
-**API:** https://weekly-report-generator-azure.vercel.app/api/v1
-**API docs:** https://weekly-report-generator-azure.vercel.app/docs
+**Live Demo:** [Open Application](https://weekly-report-generator-bh6x.vercel.app)
+
+**API:** [API Endpoint](https://weekly-report-generator-azure.vercel.app/api/v1)
+
+**API Docs:** [Swagger Documentation](https://weekly-report-generator-azure.vercel.app/docs)
 ---
 
 ## Stack
